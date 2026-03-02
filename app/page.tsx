@@ -475,45 +475,6 @@ export default function App() {
       <Nav current={page} onNavigate={onNavigate} />
       {renderPage()}
       <Footer onNavigate={onNavigate} />
-      {/* ElevenLabs Widget */}
-      <div dangerouslySetInnerHTML={{ __html: '<elevenlabs-convai agent-id="agent_9201kjnr6xqcfk7syx2g3fd7hph8"></elevenlabs-convai><script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async type="text/javascript"></script>' }} />
-      <script dangerouslySetInnerHTML={{ __html: `
-        (function check() {
-          var widget = document.querySelector('elevenlabs-convai');
-          if (!widget) { setTimeout(check, 500); return; }
-          widget.addEventListener('elevenlabs-convai:call', function(event) {
-            console.log('TOOL CALLED:', JSON.stringify(event.detail));
-            event.detail.config.clientTools = {
-              navigate_to_page: function(params) {
-                console.log('NAVIGATING TO:', params.page);
-                if (window.__elevenHotelsNavigate) window.__elevenHotelsNavigate(params.page);
-                return 'Navigated to ' + params.page;
-              },
-              search_hotels: function(params) {
-                console.log('SEARCHING:', params.location);
-                if (window.__elevenHotelsNavigate) window.__elevenHotelsNavigate('hotels');
-                return 'Showing hotels in ' + params.location;
-              },
-              start_booking: function(params) {
-                console.log('BOOKING:', params.hotel_name);
-                if (window.__elevenHotelsNavigate) window.__elevenHotelsNavigate('booking');
-                return 'Starting booking for ' + params.hotel_name;
-              },
-              view_billing: function(params) {
-                console.log('BILLING');
-                if (window.__elevenHotelsNavigate) window.__elevenHotelsNavigate('billing');
-                return 'Showing billing records';
-              },
-              check_rewards_balance: function() {
-                console.log('REWARDS');
-                if (window.__elevenHotelsNavigate) window.__elevenHotelsNavigate('rewards');
-                return 'Points balance: 45,230. Tier: Gold';
-              }
-            };
-          });
-          console.log('CLIENT TOOLS REGISTERED');
-        })();
-      `}} />
     </div>
   );
 }
