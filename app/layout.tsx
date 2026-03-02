@@ -35,9 +35,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     return 'Showing hotels in ' + params.location;
                   },
                   start_booking: function(params) {
-                    if (window.__elevenHotelsNavigate) window.__elevenHotelsNavigate('booking');
-                    return 'Starting booking for ' + params.hotel_name;
-                  },
+                  if (window.__elevenHotelsStartBooking) {
+                    window.__elevenHotelsStartBooking(params.hotel_name || '', params.check_in_date || '', params.check_out_date || '', params.guests || '3');
+                  } else if (window.__elevenHotelsNavigate) {
+                    window.__elevenHotelsNavigate('booking');
+                  }
+                  return 'Starting booking for ' + (params.hotel_name || 'selected hotel');
+                },
                   view_billing: function(params) {
                     if (window.__elevenHotelsNavigate) window.__elevenHotelsNavigate('billing');
                     return 'Showing billing records';

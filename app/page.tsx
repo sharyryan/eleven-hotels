@@ -442,9 +442,9 @@ function HotelsPage({ onNavigate }: { onNavigate: (p: Page) => void }) {
   );
 }
 
-function BookingPage({ selectedHotel, onNavigate }: { selectedHotel: typeof nycHotels[0] | null; onNavigate: (p: Page) => void }) {
+function BookingPage({ selectedHotel, onNavigate, bookingDefaults }: { selectedHotel: typeof nycHotels[0] | null; onNavigate: (p: Page) => void; bookingDefaults?: {checkin: string; checkout: string; guests: string} | null }) {
   const [step, setStep] = useState(1);
-  const [form, setForm] = useState({ location: "New York", checkin: "", checkout: "", guests: "3", hotel: selectedHotel?.name || "", room: "" });
+  const [form, setForm] = useState({ location: "New York", checkin: bookingDefaults?.checkin || "", checkout: bookingDefaults?.checkout || "", guests: bookingDefaults?.guests || "3", hotel: selectedHotel?.name || "", room: "" });
   const [usePoints, setUsePoints] = useState(false);
   const [pointsToUse, setPointsToUse] = useState(0);
 
@@ -839,6 +839,7 @@ function FAQPage() {
 export default function App() {
   const [page, setPage] = useState<Page>("home");
   const [selectedHotel, setSelectedHotel] = useState<typeof nycHotels[0] | null>(null);
+  const [bookingDefaults, setBookingDefaults] = useState<{checkin: string; checkout: string; guests: string} | null>(null);
 
   useEffect(() => {
     (window as any).__elevenHotelsNavigate = (p: Page) => {
@@ -846,6 +847,13 @@ export default function App() {
       window.scrollTo(0, 0);
     };
     (window as any).__elevenHotelsGetPage = () => page;
+    (window as any).__elevenHotelsStartBooking = (hotelName: string, checkin: string, checkout: string, guests: string) => {
+      const hotel = nycHotels.find(h => h.name.toLowerCase().includes(hotelName.toLowerCase()));
+      if (hotel) setSelectedHotel(hotel);
+      setBookingDefaults({ checkin, checkout, guests });
+      setPage("booking");
+      window.scrollTo(0, 0);
+    };
   }, [page]);
 
   const onNavigate = (p: Page) => {
@@ -858,7 +866,7 @@ export default function App() {
       case "home": return <HomePage onNavigate={onNavigate} />;
       case "hotels": return <HotelsPage onNavigate={onNavigate} />;
       case "nyc_hotels": return <NYCHotelsPage onNavigate={onNavigate} onSelectHotel={setSelectedHotel} />;
-      case "booking": return <BookingPage selectedHotel={selectedHotel} onNavigate={onNavigate} />;
+     case "booking": return <BookingPage selectedHotel={selectedHotel} onNavigate={onNavigate} bookingDefaults={bookingDefaults} />;
       case "billing": return <BillingPage />;
       case "account": return <AccountPage />;
       case "rewards": return <RewardsPage onNavigate={onNavigate} />;
