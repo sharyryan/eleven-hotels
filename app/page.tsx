@@ -456,7 +456,14 @@ function BookingPage({ selectedHotel, onNavigate, bookingDefaults }: { selectedH
 
   useEffect(() => {
     if (selectedHotel) {
-      setForm(f => ({ ...f, hotel: selectedHotel.name }));
+      setForm(f => ({
+        ...f,
+        hotel: selectedHotel.name,
+        location: "New York",
+        checkin: f.checkin || "2025-03-15",
+        checkout: f.checkout || "2025-03-18",
+        guests: f.guests || "3"
+      }));
       setStep(2);
     }
   }, [selectedHotel]);
